@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transport Booking Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">All Canada Van Lines</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('form_page') }}">Book Now</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_login') }}">Admin Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5 p-4 bg-white shadow rounded">
+        <h2 class="mb-4">Book Your Transport</h2>
+        <form action="/book" method="POST" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" class="form-control" name="phone" id="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" class="form-control" name="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="pickup">Pickup Location:</label>
+                <select class="form-control" name="pickup" id="pickup" onchange="calculateEstimate()" required>
+                    <option value="" disabled selected>Select Pickup City</option>
+                    <option>Toronto</option>
+                    <option>Vancouver</option>
+                    <option>Montreal</option>
+                    <option>Calgary</option>
+                    <option>Ottawa</option>
+                    <option>Edmonton</option>
+                    <option>Winnipeg</option>
+                    <option>Quebec City</option>
+                    <option>Hamilton</option>
+                    <option>Kitchener</option>
+                    <option>London</option>
+                    <option>Mississauga</option>
+                    <option>Brampton</option>
+                    <option>Surrey</option>
+                    <option>Halifax</option>
+                    <option>Saskatoon</option>
+                    <option>Regina</option>
+                    <option>Windsor</option>
+                    <option>Burnaby</option>
+                    <option>St. John's</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="drop">Drop Location:</label>
+                <select class="form-control" name="drop" id="drop" onchange="calculateEstimate()" required>
+                    <option value="" disabled selected>Select Drop City</option>
+                    <option>Toronto</option>
+                    <option>Vancouver</option>
+                    <option>Montreal</option>
+                    <option>Calgary</option>
+                    <option>Ottawa</option>
+                    <option>Edmonton</option>
+                    <option>Winnipeg</option>
+                    <option>Quebec City</option>
+                    <option>Hamilton</option>
+                    <option>Kitchener</option>
+                    <option>London</option>
+                    <option>Mississauga</option>
+                    <option>Brampton</option>
+                    <option>Surrey</option>
+                    <option>Halifax</option>
+                    <option>Saskatoon</option>
+                    <option>Regina</option>
+                    <option>Windsor</option>
+                    <option>Burnaby</option>
+                    <option>St. John's</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="property_size">Property Size:</label>
+                <select class="form-control" name="property_size" required>
+                    <option value="" disabled selected>Select Property Size</option>
+                    <option>Studio</option>
+                    <option>1 Room</option>
+                    <option>2 Rooms</option>
+                    <option>3 Rooms</option>
+                    <option>4 Rooms</option>
+                    <option>5 Rooms</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="shipment_date">Shipment Date:</label>
+                <input type="date" class="form-control" name="shipment_date" id="shipment_date" required>
+            </div>
+            
+            <div id="estimated-cost-output"></div>
+
+            <button type="submit" class="btn btn-primary mt-3">Submit Booking</button>
+        </form>
+
+        {% if message %}
+            <div class="alert alert-info mt-3">{{ message }}</div>
+        {% endif %}
+    </div>
+    
+    <footer class="bg-dark text-white pt-4 pb-2 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 All Canada Van Lines. All rights reserved.</p>
+            <p>Contact us: 1-833-372-9071 | <a href="mailto:sales@example.com" class="text-white">sales@example.com</a></p>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- 1. Date Restriction Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('shipment_date');
+            if (dateInput) {
+                const today = new Date();
+                today.setDate(today.getDate() + 3);
+
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+
+                const minDate = `${year}-${month}-${day}`;
+                dateInput.setAttribute('min', minDate);
+            }
+        });
+
+        // --- 2. Dynamic Estimation Logic ---
+        function calculateEstimate() {
+            const pickup = document.getElementById('pickup').value;
+            const drop = document.getElementById('drop').value;
+            const outputElement = document.getElementById('estimated-cost-output');
+
+            if (pickup && drop && pickup !== drop) {
+                // --- PROOF-OF-CONCEPT CALCULATION ---
+                // Replace this logic with a real API call and your business cost model later.
+                let baseCost = 1500;
+                
+                // Increase cost for longer routes
+                if (pickup.includes('Vancouver') || drop.includes('Vancouver') || pickup.includes('Montreal') || drop.includes('Montreal')) {
+                    baseCost = 3000;
+                } else if (pickup !== 'Toronto' && drop !== 'Toronto') {
+                    baseCost = 2000;
+                }
+
+                const estimatedCost = baseCost;
+
+                outputElement.innerHTML = `<div class="alert alert-success mt-3">Estimated Cost: <strong>$${estimatedCost.toLocaleString()} CAD</strong></div>`;
+            } else if (pickup === drop && pickup) {
+                outputElement.innerHTML = `<div class="alert alert-warning mt-3">Pickup and Drop locations must be different.</div>`;
+            } else {
+                outputElement.innerHTML = '';
+            }
+        }
+
+        // --- 3. Form Validation Logic ---
+        function validateForm() {
+            const phoneInput = document.getElementById('phone').value;
+            const emailInput = document.getElementById('email').value;
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/;
+
+            if (!emailRegex.test(emailInput)) {
+                alert('Please enter a valid email address.');
+                return false;
+            }
+            
+            if (!phoneRegex.test(phoneInput)) {
+                alert('Please enter a valid phone number (e.g., 555-555-5555).');
+                return false;
+            }
+
+            // Ensure a cost estimate has been generated (or the form is valid)
+            if (!document.getElementById('estimated-cost-output').innerHTML) {
+                 // Prevent submission if a valid pick-up/drop is not selected
+                 alert('Please select valid and different pickup and drop locations to get an estimate.');
+                 return false;
+            }
+
+            return true;
+        }
+    </script>
+    </body>
+</html>
