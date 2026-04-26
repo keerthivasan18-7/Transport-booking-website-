@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+cache/
+.vscode/
+
+# Runtime/generated databases
+transport_booking.sqlite
+customers.db
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

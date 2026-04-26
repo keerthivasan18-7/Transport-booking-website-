@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Transport Booking Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="page-shell">
+        <nav class="navbar navbar-expand-lg navbar-light top-nav">
+            <div class="container">
+                <a class="navbar-brand brand-logo" href="{{ url_for('home') }}">
+                    <img src="{{ url_for('static', filename='label.png') }}" alt="True North Vanlines" class="brand-logo-image">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('form') }}">Book Now</a>
+                        </li>
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                            <a class="btn btn-brand" href="{{ url_for('login') }}">Admin</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container my-4 my-md-5 flex-grow-1">
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-4">
+                    <div class="panel-card p-4 reveal-up">
+                        <h1 class="section-title">Book Your Move</h1>
+                        <p class="text-secondary mb-3">Share your route and property details to lock your booking in minutes.</p>
+                        <div class="pill-row mt-0">
+                            <span class="pill" style="color:#0f5a55;border-color:rgba(15,90,85,.25);background:rgba(15,118,110,.12);">3+ day scheduling</span>
+                            <span class="pill" style="color:#0f5a55;border-color:rgba(15,90,85,.25);background:rgba(15,118,110,.12);">Auto estimate preview</span>
+                        </div>
+                        <div class="booking-image-panel">
+                            <div class="booking-image-copy">
+                                <h3>Professional Crews. Protected Moves.</h3>
+                                <p>From careful wrapping to final placement, every move is tracked for quality and timing.</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <p class="mb-0 text-secondary"><strong>Need help?</strong><br>Visit <a href="https://www.truenorthvanlines.ca/" target="_blank" rel="noopener noreferrer">truenorthvanlines.ca</a></p>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="panel-card form-panel reveal-up">
+                        <form action="{{ url_for('book') }}" method="POST" onsubmit="return validateForm()">
+                            <div class="row g-3">
+                                <div class="col-md-6 field-block">
+                                    <label for="name">Full Name</label>
+                                    <input type="text" class="form-control{% if field_errors.get('name') %} is-invalid{% endif %}" name="name" id="name" value="{{ form_data.get('name', '') }}" aria-invalid="{% if field_errors.get('name') %}true{% else %}false{% endif %}" required>
+                                    {% if field_errors.get('name') %}
+                                        <span class="field-error-text">{{ field_errors.get('name') }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 field-block">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="text" class="form-control{% if field_errors.get('phone') %} is-invalid{% endif %}" name="phone" id="phone" value="{{ form_data.get('phone', '') }}" aria-invalid="{% if field_errors.get('phone') %}true{% else %}false{% endif %}" required>
+                                    {% if field_errors.get('phone') %}
+                                        <span class="field-error-text">{{ field_errors.get('phone') }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-12 field-block">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" class="form-control{% if field_errors.get('email') %} is-invalid{% endif %}" name="email" id="email" value="{{ form_data.get('email', '') }}" aria-invalid="{% if field_errors.get('email') %}true{% else %}false{% endif %}" required>
+                                    {% if field_errors.get('email') %}
+                                        <span class="field-error-text">{{ field_errors.get('email') }}</span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 field-block">
+                                    <label for="pickup">Pickup Location</label>
+                                    <select class="form-select{% if field_errors.get('pickup') %} is-invalid{% endif %}" name="pickup" id="pickup" onchange="calculateEstimate()" aria-invalid="{% if field_errors.get('pickup') %}true{% else %}false{% endif %}" required>
+                                        <option value="" disabled {% if not form_data.get('pickup') %}selected{% endif %}>Select Pickup City</option>
+                                        {% for city in city_options %}
+                                            <option value="{{ city }}" {% if form_data.get('pickup', '') == city %}selected{% endif %}>{{ city }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if field_errors.get('pickup') %}
+                                        <span class="field-error-text">{{ field_errors.get('pickup') }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 field-block">
+                                    <label for="drop">Drop Location</label>
+                                    <select class="form-select{% if field_errors.get('drop') %} is-invalid{% endif %}" name="drop" id="drop" onchange="calculateEstimate()" aria-invalid="{% if field_errors.get('drop') %}true{% else %}false{% endif %}" required>
+                                        <option value="" disabled {% if not form_data.get('drop') %}selected{% endif %}>Select Drop City</option>
+                                        {% for city in city_options %}
+                                            <option value="{{ city }}" {% if form_data.get('drop', '') == city %}selected{% endif %}>{{ city }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if field_errors.get('drop') %}
+                                        <span class="field-error-text">{{ field_errors.get('drop') }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 field-block">
+                                    <label for="property_size">Property Size</label>
+                                    <select class="form-select{% if field_errors.get('property_size') %} is-invalid{% endif %}" name="property_size" id="property_size" aria-invalid="{% if field_errors.get('property_size') %}true{% else %}false{% endif %}" required>
+                                        <option value="" disabled {% if not form_data.get('property_size') %}selected{% endif %}>Select Property Size</option>
+                                        {% for property_size in property_options %}
+                                            <option value="{{ property_size }}" {% if form_data.get('property_size', '') == property_size %}selected{% endif %}>{{ property_size }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if field_errors.get('property_size') %}
+                                        <span class="field-error-text">{{ field_errors.get('property_size') }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 field-block">
+                                    <label for="shipment_date">Shipment Date</label>
+                                    <input type="date" class="form-control{% if field_errors.get('shipment_date') %} is-invalid{% endif %}" name="shipment_date" id="shipment_date" value="{{ form_data.get('shipment_date', '') }}" aria-invalid="{% if field_errors.get('shipment_date') %}true{% else %}false{% endif %}" required>
+                                    {% if field_errors.get('shipment_date') %}
+                                        <span class="field-error-text">{{ field_errors.get('shipment_date') }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div id="estimated-cost-output" class="mt-3"></div>
+                            <button type="submit" class="btn btn-accent mt-2">Submit Booking</button>
+                        </form>
+
+                        {% if message %}
+                            <div class="alert alert-soft mt-3 mb-0">{{ message }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer-note py-3">
+            <div class="container d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                <p class="mb-1 mb-md-0">&copy; 2026 True North Vanlines</p>
+                <p class="mb-0">Official Site: <a href="https://www.truenorthvanlines.ca/" target="_blank" rel="noopener noreferrer">truenorthvanlines.ca</a></p>
+            </div>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- 1. Date Restriction Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('shipment_date');
+            if (dateInput) {
+                const today = new Date();
+                today.setDate(today.getDate() + 3);
+
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+
+                const minDate = `${year}-${month}-${day}`;
+                dateInput.setAttribute('min', minDate);
+            }
+        });
+
+        // --- 2. Dynamic Estimation Logic ---
+        function calculateEstimate() {
+            const pickup = document.getElementById('pickup').value;
+            const drop = document.getElementById('drop').value;
+            const outputElement = document.getElementById('estimated-cost-output');
+
+            if (pickup && drop && pickup !== drop) {
+                // --- PROOF-OF-CONCEPT CALCULATION ---
+                // Replace this logic with a real API call and your business cost model later.
+                let baseCost = 1500;
+                
+                // Increase cost for longer routes
+                if (pickup.includes('Vancouver') || drop.includes('Vancouver') || pickup.includes('Montreal') || drop.includes('Montreal')) {
+                    baseCost = 3000;
+                } else if (pickup !== 'Toronto' && drop !== 'Toronto') {
+                    baseCost = 2000;
+                }
+
+                const estimatedCost = baseCost;
+
+                outputElement.innerHTML = `<div class="alert alert-soft">Estimated Cost: <strong>$${estimatedCost.toLocaleString()} CAD</strong></div>`;
+            } else if (pickup === drop && pickup) {
+                outputElement.innerHTML = `<div class="alert alert-warning">Pickup and Drop locations must be different.</div>`;
+            } else {
+                outputElement.innerHTML = '';
+            }
+        }
+
+        // --- 3. Form Validation Logic ---
+        function validateForm() {
+            const phoneInput = document.getElementById('phone').value;
+            const emailInput = document.getElementById('email').value;
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneDigits = phoneInput.replace(/\D/g, '');
+            let normalizedDigits = phoneDigits;
+            if (normalizedDigits.length === 11 && normalizedDigits.startsWith('1')) {
+                normalizedDigits = normalizedDigits.slice(1);
+            }
+            const canadianNanpRegex = /^[2-9]\d{2}[2-9]\d{6}$/;
+
+            if (!emailRegex.test(emailInput)) {
+                alert('Please enter a valid email address.');
+                return false;
+            }
+            
+            if (!canadianNanpRegex.test(normalizedDigits)) {
+                alert('Please enter a valid Canadian phone number (e.g., +1 416-555-1234).');
+                return false;
+            }
+
+            // Ensure a cost estimate has been generated (or the form is valid)
+            if (!document.getElementById('estimated-cost-output').innerHTML) {
+                 // Prevent submission if a valid pick-up/drop is not selected
+                 alert('Please select valid and different pickup and drop locations to get an estimate.');
+                 return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>
