@@ -52,7 +52,7 @@ Open: http://localhost:5000
 3. Configure:
 - Runtime: `Python`
 - Build command: `pip install -r requirements.txt`
-- Start command: `gunicorn wsgi:application`
+- Start command: `gunicorn --bind 0.0.0.0:$PORT wsgi:application`
 4. Add environment variables in Render:
 - `FLASK_SECRET_KEY` (required, strong random value)
 - `ADMIN_USER` (required)
@@ -72,7 +72,7 @@ Your public URL will look like: `https://your-service-name.onrender.com`
 		- Never use default admin password in production.
 		- Keep `FLASK_SECRET_KEY` private and strong.
 	- Deployment:
-		- Production servers should run `gunicorn wsgi:application`.
+		- Production servers should run `gunicorn --bind 0.0.0.0:$PORT wsgi:application`.
 		- `wsgi.py` exposes the Flask app in a standard format for hosts like Render, Railway, and Fly.io.
 
 ## Files added for deployment
