@@ -19,9 +19,16 @@
         </nav>
 
         <main class="container flex-grow-1 d-flex align-items-center justify-content-center">
-            <div class="panel-card login-card reveal-up">
+            <div class="auth-card login-card reveal-up">
+                <span class="eyebrow d-flex justify-content-center mx-auto">Secure admin access</span>
                 <h1 class="section-title text-center">Admin Login</h1>
-                <p class="text-center text-secondary mb-4">Access booking management and truck assignment controls.</p>
+                <p class="text-center text-secondary mb-4">Access booking management, inventory, and truck assignment controls from a polished dashboard.</p>
+
+                <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                    <span class="badge-soft">Dashboard access</span>
+                    <span class="badge-soft">Inventory control</span>
+                    <span class="badge-soft">Export tools</span>
+                </div>
 
                 {% if error %}
                     <div class="alert alert-danger">{{ error }}</div>

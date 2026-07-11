@@ -37,7 +37,7 @@ $env:ADMIN_PASS = "change-this-password"
 $env:ORS_API_KEY = "your-openrouteservice-key"
 ```
 
-4. Start app
+3. Start app
 
 ```powershell
 python app.py
@@ -48,11 +48,11 @@ Open: http://localhost:5000
 ## Make it public (Render)
 
 1. Push this repo to GitHub.
-2. In Render, create a new **Web Service** from the repo.
+2. In Render, create a new **Web Service** from the repo or use the included `render.yaml` blueprint.
 3. Configure:
 - Runtime: `Python`
 - Build command: `pip install -r requirements.txt`
-- Start command: `gunicorn app:app`
+- Start command: `gunicorn wsgi:application`
 4. Add environment variables in Render:
 - `FLASK_SECRET_KEY` (required, strong random value)
 - `ADMIN_USER` (required)
@@ -66,14 +66,18 @@ Your public URL will look like: `https://your-service-name.onrender.com`
 
 - Data persistence:
 	- This app uses local SQLite file (`transport_booking.sqlite`).
-	- On free tiers, ephemeral filesystem may reset on redeploy/restart.
-	- For reliable production data, migrate to managed Postgres.
-- Security:
-	- Never use default admin password in production.
-	- Keep `FLASK_SECRET_KEY` private and strong.
+		- On free tiers, ephemeral filesystem may reset on redeploy/restart.
+		- For reliable production data, migrate to managed Postgres.
+	- Security:
+		- Never use default admin password in production.
+		- Keep `FLASK_SECRET_KEY` private and strong.
+	- Deployment:
+		- Production servers should run `gunicorn wsgi:application`.
+		- `wsgi.py` exposes the Flask app in a standard format for hosts like Render, Railway, and Fly.io.
 
 ## Files added for deployment
 
 - `requirements.txt`: Python dependencies
-- `Procfile`: process declaration (`gunicorn app:app`)
+- `Procfile`: process declaration (`gunicorn wsgi:application`)
+- `render.yaml`: Render blueprint for one-click deployment
 - `.env.example`: environment variable template
