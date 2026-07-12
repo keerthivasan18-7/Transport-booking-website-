@@ -270,8 +270,8 @@ SRM Institute of Science and Technology
 GitHub:
 https://github.com/keerthivasan18-7
 
-LinkedIn:
-(Add your LinkedIn profile link)
+LinkedIn: www.linkedin.com/in/keerthivasan-a-0195392a4
+
 
 ---
 
