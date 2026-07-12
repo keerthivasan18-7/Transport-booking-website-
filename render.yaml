@@ -7,6 +7,8 @@ services:
     startCommand: gunicorn --bind 0.0.0.0:$PORT wsgi:application
     autoDeploy: true
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
       - key: FLASK_SECRET_KEY
         sync: false
       - key: ADMIN_USER

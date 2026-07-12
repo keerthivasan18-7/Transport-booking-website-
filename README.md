@@ -54,6 +54,7 @@ Open: http://localhost:5000
 - Build command: `pip install -r requirements.txt`
 - Start command: `gunicorn --bind 0.0.0.0:$PORT wsgi:application`
 4. Add environment variables in Render:
+- `PYTHON_VERSION` = `3.11.11`
 - `FLASK_SECRET_KEY` (required, strong random value)
 - `ADMIN_USER` (required)
 - `ADMIN_PASS` (required)
