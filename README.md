@@ -45,15 +45,15 @@ python app.py
 
 Open: http://localhost:5000
 
-## Make it public (Render)
+## Make it public (Railway)
 
 1. Push this repo to GitHub.
-2. In Render, create a new **Web Service** from the repo or use the included `render.yaml` blueprint.
+2. In Railway, create a new project from the GitHub repo.
 3. Configure:
 - Runtime: `Python`
 - Build command: `pip install -r requirements.txt`
 - Start command: `gunicorn --bind 0.0.0.0:$PORT wsgi:application`
-4. Add environment variables in Render:
+4. Add environment variables in Railway:
 - `PYTHON_VERSION` = `3.11.11`
 - `FLASK_SECRET_KEY` (required, strong random value)
 - `ADMIN_USER` (required)
@@ -61,7 +61,7 @@ Open: http://localhost:5000
 - `ORS_API_KEY` (optional but recommended)
 5. Deploy.
 
-Your public URL will look like: `https://your-service-name.onrender.com`
+Your public URL will look like: `https://your-service-name.up.railway.app`
 
 ## Important production notes
 
@@ -74,11 +74,11 @@ Your public URL will look like: `https://your-service-name.onrender.com`
 		- Keep `FLASK_SECRET_KEY` private and strong.
 	- Deployment:
 		- Production servers should run `gunicorn --bind 0.0.0.0:$PORT wsgi:application`.
-		- `wsgi.py` exposes the Flask app in a standard format for hosts like Render, Railway, and Fly.io.
+		- `wsgi.py` exposes the Flask app in a standard format for hosts like Railway and Fly.io.
 
 ## Files added for deployment
 
 - `requirements.txt`: Python dependencies
 - `Procfile`: process declaration (`gunicorn wsgi:application`)
-- `render.yaml`: Render blueprint for one-click deployment
 - `.env.example`: environment variable template
+- `.python-version`: pins the Python runtime for the host
