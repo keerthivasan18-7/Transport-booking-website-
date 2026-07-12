@@ -1,87 +1,282 @@
-# Transport Booking Website
+# 🚚 Transport Booking Website
 
-Flask-based transport booking web application with:
-- Customer booking form
-- Admin dashboard and booking management
-- Truck inventory tracking
-- Quotation calculation
+A Flask-based web application developed to streamline transportation booking and fleet management for a moving company. The system automates customer bookings, truck allocation, quotation generation, route calculation, and booking management through an intuitive admin dashboard.
 
-## Can we deploy this with Streamlit?
+The project was developed as part of an internship for **TrueNorth Van Lines** to improve operational efficiency by digitizing the complete booking workflow.
 
-This project is **Flask**, not Streamlit.
+---
 
-- If you want to keep this code as-is: deploy on a Flask-friendly host (Render, Railway, Fly.io, etc.).
-- If you want Streamlit Cloud specifically: the UI/routes would need to be rewritten in Streamlit.
+## 🌐 Live Demo
 
-## Run locally
+🔗 [https://truemnorthvanlines.up.railway.app](https://truemnorthvanlines.up.railway.app)
 
-1. Create and activate virtual environment
+---
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+## 📌 Project Overview
+
+The Transport Booking Website enables customers to book transportation services online while allowing administrators to efficiently manage bookings, truck inventory, and delivery status.
+
+The application automatically assigns trucks based on the customer's property size, calculates travel distance and estimated duration using the OpenRouteService API, and provides administrators with tools to monitor bookings and manage transportation resources effectively.
+
+---
+
+## ✨ Features
+
+### 👤 Customer Module
+
+- Online transport booking form
+- Pickup and drop location entry
+- Property size selection
+- Automatic truck assignment
+- Automatic quotation generation
+- Distance and travel duration calculation
+- Booking confirmation
+
+---
+
+### 👨‍💼 Admin Module
+
+- Secure admin login
+- View all customer bookings
+- Edit booking details
+- Delete bookings
+- Mark deliveries as completed
+- Download booking records to Excel
+- Filter bookings by shipment date
+
+---
+
+### 🚛 Truck Inventory Management
+
+- Automatic truck allocation
+- Inventory tracking
+- Automatic availability updates after delivery completion
+- Multiple truck categories supported
+
+---
+
+### 📍 Route Optimization
+
+- OpenRouteService API integration
+- Automatic distance calculation
+- Estimated travel duration
+- Optimized driving routes
+
+---
+
+## 🛠️ Technologies Used
+
+### Backend
+
+- Python
+- Flask
+
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+
+### Database
+
+- SQLite
+
+### Libraries
+
+- Pandas
+- OpenPyXL
+- OpenRouteService
+- Gunicorn
+
+### Deployment
+
+- Railway
+
+---
+
+## 📂 Project Structure
+
+```text
+Transport-booking-website/
+│
+├── app.py
+├── wsgi.py
+├── requirements.txt
+├── Procfile
+├── railway.json
+├── .python-version
+├── transport_booking.sqlite
+├── truck_inventory.xlsx
+├── customer_bookings.xlsx
+│
+├── templates/
+│   ├── home.html
+│   ├── form.html
+│   ├── login.html
+│   ├── admin.html
+│   ├── edit.html
+│   └── truck_inventory.html
+│
+├── static/
+│
+└── README.md
 ```
 
-2. Install dependencies
+---
 
-```powershell
+## ⚙️ Installation
+
+### Clone the repository
+
+```bash
+git clone https://github.com/keerthivasan18-7/Transport-booking-website-.git
+```
+
+Move into the project directory
+
+```bash
+cd Transport-booking-website-
+```
+
+---
+
+### Create a virtual environment
+
+Windows
+
+```bash
+python -m venv .venv
+```
+
+Activate
+
+```bash
+.\.venv\Scripts\activate
+```
+
+---
+
+### Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-3. Set environment variables (PowerShell example)
+---
 
-```powershell
-$env:FLASK_SECRET_KEY = "change-this-to-a-random-secret"
-$env:ADMIN_USER = "admin"
-$env:ADMIN_PASS = "change-this-password"
-$env:ORS_API_KEY = "your-openrouteservice-key"
+### Configure Environment Variables
+
+Create a `.env` file or configure the following variables:
+
+```text
+FLASK_SECRET_KEY=your_secret_key
+ADMIN_USER=admin
+ADMIN_PASS=your_password
+ORS_API_KEY=your_openrouteservice_api_key
 ```
 
-3. Start app
+---
 
-```powershell
+### Run the application
+
+```bash
 python app.py
 ```
 
-## Make it public (Railway)
+The application will be available at:
 
-Live site:
-- [truemnorthvanlines.up.railway.app](https://truemnorthvanlines.up.railway.app)
+```text
+http://127.0.0.1:5000
+```
 
-1. Push this repo to GitHub.
-2. In Railway, create a new project from the GitHub repo.
-3. Configure:
-- Runtime: `Python`
-- Build command: `pip install -r requirements.txt`
-- Start command: `gunicorn --bind 0.0.0.0:$PORT wsgi:application`
-	- These are also defined in `railway.json` for source deploys.
-4. Add environment variables in Railway:
-- `PYTHON_VERSION` = `3.11.11`
-- `FLASK_SECRET_KEY` (required, strong random value)
-- `ADMIN_USER` (required)
-- `ADMIN_PASS` (required)
-- `ORS_API_KEY` (optional but recommended)
-5. Deploy.
+---
 
-Your public URL is: `https://truemnorthvanlines.up.railway.app`
+## 🚀 Deployment
 
-## Important production notes
+This project has been deployed on **Railway** using Gunicorn.
 
-- Data persistence:
-	- This app uses local SQLite file (`transport_booking.sqlite`).
-		- On free tiers, ephemeral filesystem may reset on redeploy/restart.
-		- For reliable production data, migrate to managed Postgres.
-	- Security:
-		- Never use default admin password in production.
-		- Keep `FLASK_SECRET_KEY` private and strong.
-	- Deployment:
-		- Production servers should run `gunicorn --bind 0.0.0.0:$PORT wsgi:application`.
-		- `wsgi.py` exposes the Flask app in a standard format for hosts like Railway and Fly.io.
+Production Start Command:
 
-## Files added for deployment
+```bash
+gunicorn --bind 0.0.0.0:$PORT wsgi:application
+```
 
-- `requirements.txt`: Python dependencies
-- `Procfile`: process declaration (`gunicorn wsgi:application`)
-- `railway.json`: Railway config-as-code for source deploys
-- `.env.example`: environment variable template
-- `.python-version`: pins the Python runtime for the host
+Production URL:
+
+```text
+https://truemnorthvanlines.up.railway.app
+```
+
+---
+
+## 📊 Key Functionalities
+
+- Customer booking management
+- Vehicle allocation automation
+- Distance calculation
+- Travel time estimation
+- Route optimization
+- Truck inventory management
+- Admin dashboard
+- Excel export
+- Booking status management
+
+---
+
+## 📸 Screenshots
+
+Add screenshots of:
+
+- Home Page
+- Booking Form
+- Admin Dashboard
+- Truck Inventory
+- Booking Records
+
+Example:
+
+```text
+screenshots/
+    home.png
+    dashboard.png
+    inventory.png
+```
+
+---
+
+## 🔮 Future Enhancements
+
+- PostgreSQL database integration
+- Google Maps integration
+- Email confirmation for bookings
+- SMS notifications
+- Live GPS tracking
+- Customer booking history
+- Online payment gateway
+- Multi-admin support
+- Analytics dashboard
+- Driver management module
+
+---
+
+## 👨‍💻 Developed By
+
+**A. Keerthivasan**
+
+B.Tech Computer Science and Engineering (Artificial Intelligence & Machine Learning)
+
+SRM Institute of Science and Technology
+
+GitHub:
+https://github.com/keerthivasan18-7
+
+LinkedIn:
+(Add your LinkedIn profile link)
+
+---
+
+## 📄 License
+
+This project was developed for educational and internship purposes.
+
+© 2026 A. Keerthivasan. All rights reserved.
