@@ -53,6 +53,7 @@ Open: http://localhost:5000
 - Runtime: `Python`
 - Build command: `pip install -r requirements.txt`
 - Start command: `gunicorn --bind 0.0.0.0:$PORT wsgi:application`
+	- These are also defined in `railway.json` for source deploys.
 4. Add environment variables in Railway:
 - `PYTHON_VERSION` = `3.11.11`
 - `FLASK_SECRET_KEY` (required, strong random value)
@@ -80,5 +81,6 @@ Your public URL will look like: `https://your-service-name.up.railway.app`
 
 - `requirements.txt`: Python dependencies
 - `Procfile`: process declaration (`gunicorn wsgi:application`)
+- `railway.json`: Railway config-as-code for source deploys
 - `.env.example`: environment variable template
 - `.python-version`: pins the Python runtime for the host
