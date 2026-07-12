@@ -47,6 +47,9 @@ Open: http://localhost:5000
 
 ## Make it public (Railway)
 
+Live site:
+- [truemnorthvanlines.up.railway.app](https://truemnorthvanlines.up.railway.app)
+
 1. Push this repo to GitHub.
 2. In Railway, create a new project from the GitHub repo.
 3. Configure:
@@ -62,7 +65,7 @@ Open: http://localhost:5000
 - `ORS_API_KEY` (optional but recommended)
 5. Deploy.
 
-Your public URL will look like: `https://your-service-name.up.railway.app`
+Your public URL is: `https://truemnorthvanlines.up.railway.app`
 
 ## Important production notes
 
