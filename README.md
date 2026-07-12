@@ -43,8 +43,6 @@ $env:ORS_API_KEY = "your-openrouteservice-key"
 python app.py
 ```
 
-Open: http://localhost:5000
-
 ## Make it public (Railway)
 
 Live site:
